@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Apples in Every Row</title>
+  <style>
+    body {
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background-color: #f0f0f0;
+      font-family: Arial, sans-serif;
+    }
+
+    .game-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border: 5px solid #000;
+      background-color: #87ceeb;
+      width: 500px;
+      height: 400px;
+      margin: 20px 0;
+      display: none; /* Hidden until access granted */
+    }
+
+    #grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      grid-template-rows: repeat(4, 1fr);
+      gap: 5px;
+      width: 100%;
+      height: 100%;
+    }
+
+    .cell {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: #f4a261;
+      border: 2px solid #8d5524;
+      position: relative;
+    }
+
+    .apple {
+      width: 50%;
+      height: 50%;
+      background-color: red;
+      border-radius: 50%;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    }
+
+    input, select, button {
+      padding: 10px;
+      font-size: 16px;
+      margin: 5px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    input[type="text"] {
+      width: 150px;
+      border: 2px solid #8d5524;
+    }
+
+    button {
+      background-color: #4caf50;
+      color: white;
+      transition: background-color 0.3s;
+    }
+
+    button:hover {
+      background-color: #45a049;
+    }
+
+    #loading-message {
+      font-size: 18px;
+      margin: 10px;
+      color: #333;
+      display: none; /* Hidden initially */
+    }
+
+    #selected-platform {
+      font-size: 18px;
+      margin: 10px 0;
+      color: #333;
+    }
+  </style>
+</head>
+<body>
+  <!-- Input Section -->
+  <div>
+    <label for="type-id">Enter Type ID: </label>
+    <input type="text" id="type-id" placeholder="Type ID">
+    <button onclick="accessGrid()">Load Apples</button>
+  </div>
+
+  <!-- Dropdown to Choose Platform -->
+  <div>
+    <label for="platform-select">Choose Platform: </label>
+    <select id="platform-select">
+      <option value="1xbet">1xBet</option>
+      <option value="melbet">Melbet</option>
+      <option value="888starz">888Starz</option>
+    </select>
+  </div>
+
+  <!-- Loading Message -->
+  <div id="loading-message">Loading... Please wait!</div>
+
+  <!-- Display Selected Platform -->
+  <div id="selected-platform">Selected Platform: 1xBet</div>
+
+  <!-- Game Container -->
+  <div class="game-container" id="game-container">
+    <div id="grid"></div>
+  </div>
+
+  <!-- Button to Shuffle Apples -->
+  <button id="shuffle-button" onclick="placeApples()" style="display: none;">New Apples</button>
+
+  <script>
+    const grid = document.getElementById("grid");
+    const gameContainer = document.getElementById("game-container");
+    const platformDisplay = document.getElementById("selected-platform");
+    const loadingMessage = document.getElementById("loading-message");
+    const shuffleButton = document.getElementById("shuffle-button");
+    const rows = 4; // Number of rows
+    const cols = 5; // Number of columns
+    const totalCells = rows * cols; // Total number of cells
+
+    // Add cells to the grid
+    for (let i = 0; i < totalCells; i++) {
+      const cell = document.createElement("div");
+      cell.classList.add("cell");
+      grid.appendChild(cell);
+    }
+
+    // Function to place apples randomly (one per row)
+    function placeApples() {
+      // Clear existing apples
+      document.querySelectorAll(".apple").forEach(apple => apple.remove());
+
+      // Get all cells
+      const cells = document.querySelectorAll(".cell");
+
+      for (let row = 0; row < rows; row++) {
+        // Get the starting index of the current row
+        const startIndex = row * cols;
+
+        // Choose a random cell in the row
+        const randomIndex = startIndex + Math.floor(Math.random() * cols);
+
+        // Place an apple in the chosen cell
+        const apple = document.createElement("div");
+        apple.classList.add("apple");
+        cells[randomIndex].appendChild(apple);
+      }
+    }
+
+    // Function to access the grid
+    function accessGrid() {
+      const typeId = document.getElementById("type-id").value;
+
+      if (typeId.trim() === "") {
+        alert("Please enter a valid Type ID!");
+        return;
+      }
+
+      // Show loading message
+      loadingMessage.style.display = "block";
+
+      // Simulate a delay (e.g., 2 seconds) for loading
+      setTimeout(() => {
+        // Hide loading message
+        loadingMessage.style.display = "none";
+
+        // Show game container and shuffle button
+        gameContainer.style.display = "flex";
+        shuffleButton.style.display = "inline-block";
+
+        // Place apples initially
+        placeApples();
+      }, 2000); // 2-second delay
+    }
+
+    // Update selected platform
+    document.getElementById("platform-select").addEventListener("change", () => {
+      const platformSelect = document.getElementById("platform-select");
+      const selectedPlatform = platformSelect.options[platformSelect.selectedIndex].text;
+      platformDisplay.innerText = `Selected Platform: ${selectedPlatform}`;
+    });
+  </script>
+</body>
+</html>
